@@ -1,0 +1,13 @@
+version: 0.2
+
+phases:
+  install:
+    runtime-versions:
+      python: 3.11
+  build:
+    commands:
+      - curl -sSL https://install.python-poetry.org | POETRY_HOME=${HOME}/.poetry python3 -
+      - make package
+      - aws cloudformation package --template-file ./stacks/service-catalog-account/cfn-tailscale-ec2-instance.yml --s3-bucket $ARTIFACTS_BUCKET --s3-prefix artifacts/cfn-tailscale-ec2-instance --output-template-file ./stacks/service-catalog-account/cfn-tailscale-ec2-instance.yml
+artifacts:
+  files: "**/*"

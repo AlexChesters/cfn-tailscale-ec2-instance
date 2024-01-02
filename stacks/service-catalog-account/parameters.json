@@ -1,0 +1,7 @@
+{
+  "Parameters": {},
+  "Tags": {
+    "Project": "cfn-tailscale-ec2-instance",
+    "Environment": "live"
+  }
+}

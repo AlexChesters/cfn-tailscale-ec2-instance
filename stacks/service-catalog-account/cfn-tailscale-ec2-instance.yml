@@ -1,0 +1,44 @@
+Transform: AWS::Serverless-2016-10-31
+Description: Infrastructure for cfn-tailscale-ec2-instance
+Resources:
+  FunctionExecutionRole:
+    Type: AWS::IAM::Role
+    Properties:
+      AssumeRolePolicyDocument:
+        Statement:
+          - Effect: Allow
+            Principal:
+              Service:
+                - lambda.amazonaws.com
+            Action:
+              - sts:AssumeRole
+      ManagedPolicyArns:
+        - arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole
+      RoleName: cfn-tailscale-ec2-instance-execution-role
+      # Policies:
+      #   - PolicyName: cfn-tailscale-ec2-instance-policy
+      #     PolicyDocument:
+      #       Statement:
+      #         - Effect: Allow
+      #           Action:
+      #             - servicecatalog:CreatePortfolioShare
+      #             - servicecatalog:DeletePortfolioShare
+      #             - servicecatalog:UpdatePortfolioShare
+      #           Resource:
+      #             - "*"
+  Function:
+    Type: AWS::Serverless::Function
+    Properties:
+      Handler: cfn_tailscale_ec2_instance.main.handler
+      Runtime: python3.11
+      CodeUri: ../../build
+      Role: !GetAtt FunctionExecutionRole.Arn
+      FunctionName: cfn-tailscale-ec2-instance
+      MemorySize: 256
+      Timeout: 30
+      Tracing: Active
+      Environment:
+        Variables:
+          POWERTOOLS_SERVICE_NAME: cfn-tailscale-ec2-instance
+          POWERTOOLS_TRACER_CAPTURE_ERROR: false
+          LOG_LEVEL: INFO
